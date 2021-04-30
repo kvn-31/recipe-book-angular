@@ -1,0 +1,48 @@
+import { EventEmitter, Injectable } from '@angular/core';
+import { Ingredient } from '../models/ingredient.model';
+
+// --> Injected globally, the recipe service is only injected into the recipe component (and its child components)
+// did the different injections on purpose to test
+@Injectable({
+  providedIn: 'root'
+})
+export class ShoppingListService {
+
+  shoppingListUpdated = new EventEmitter<Ingredient[]>();
+
+  private ingredients: Ingredient[] = [
+    new Ingredient('Apples', 3),
+    new Ingredient('Banana', 2)
+  ];
+
+  constructor() { }
+
+  getIngredients(){
+    return this.ingredients.slice();
+  }
+
+  addIngredient(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+    this.shoppingListUpdated.emit(this.ingredients.slice());
+  }
+
+  // My solution
+  addIngredients(ingredients: Ingredient[]) {
+    //this.ingredients = this.ingredients.concat(ingredients);
+    // spread operator
+    this.ingredients.push(...ingredients);
+    this.shoppingListUpdated.emit(this.ingredients.slice());
+  }
+
+  /* Course Solution
+  addIngredients(ingredients: Ingredient[]) {
+    // for (let ingredient of ingredients) {
+    //   this.addIngredient(ingredient);
+    // } will emmit 1 event for every loop
+
+    this.ingredients.push(...ingredients);
+    this.ingredientsChanged.emit(this.ingredients.slice());
+    console.log(this.ingredients);
+  }
+   */
+}
