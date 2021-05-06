@@ -1,4 +1,5 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import { Ingredient } from '../models/ingredient.model';
 
 // --> Injected globally, the recipe service is only injected into the recipe component (and its child components)
@@ -8,7 +9,7 @@ import { Ingredient } from '../models/ingredient.model';
 })
 export class ShoppingListService {
 
-  shoppingListUpdated = new EventEmitter<Ingredient[]>();
+  shoppingListUpdated = new Subject<Ingredient[]>();
 
   private ingredients: Ingredient[] = [
     new Ingredient('Apples', 3),
@@ -23,7 +24,7 @@ export class ShoppingListService {
 
   addIngredient(ingredient: Ingredient) {
     this.ingredients.push(ingredient);
-    this.shoppingListUpdated.emit(this.ingredients.slice());
+    this.shoppingListUpdated.next(this.ingredients.slice());
   }
 
   // My solution
@@ -31,7 +32,7 @@ export class ShoppingListService {
     //this.ingredients = this.ingredients.concat(ingredients);
     // spread operator
     this.ingredients.push(...ingredients);
-    this.shoppingListUpdated.emit(this.ingredients.slice());
+    this.shoppingListUpdated.next(this.ingredients.slice());
   }
 
   /* Course Solution
