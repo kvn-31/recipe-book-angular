@@ -32,10 +32,14 @@ export class ShoppingListService {
     this.shoppingListUpdated.next(this.ingredients.slice());
   }
 
+  deleteIngredient(index: number) {
+    this.ingredients.splice(index, 1);
+    this.shoppingListUpdated.next(this.ingredients.slice());
+  }
+
   updateIngredient(index: number, newIngredient: Ingredient) {
     this.ingredients[index] = newIngredient;
     this.shoppingListUpdated.next(this.ingredients.slice());
-
   }
 
   // My solution
