@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Recipe } from '../models/recipe.model'
 import { RecipeService } from './recipe.service'
-import { map } from 'rxjs/operators'
+import { map, tap } from 'rxjs/operators'
 
 @Injectable({
 	providedIn: 'root',
@@ -26,7 +26,7 @@ export class DataStorageService {
 	}
 
 	fetchRecipes() {
-		this.http
+		return this.http
 			.get<Recipe[]>(
 				'https://angular-udemy-course-87367-default-rtdb.europe-west1.firebasedatabase.app/recipes.json'
 			)
@@ -43,10 +43,10 @@ export class DataStorageService {
 								: [],
 						}
 					})
+				}),
+				tap((recipes) => {
+					this.recipeService.setRecipes(recipes)
 				})
 			)
-			.subscribe((recipes) => {
-				this.recipeService.setRecipes(recipes)
-			})
 	}
 }
