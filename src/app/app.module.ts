@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -16,9 +16,10 @@ import { DropdownDirective } from './shared/dropdown.directive'
 import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component'
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component'
 import { RecipeService } from './shared/services/recipe.service'
-import { ShoppingListService } from './shared/services/shopping-list.service';
-import { AuthComponent } from './auth/auth.component';
+import { ShoppingListService } from './shared/services/shopping-list.service'
+import { AuthComponent } from './auth/auth.component'
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component'
+import { AuthInterceptorService } from './shared/services/auth-interceptor.service'
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -32,8 +33,8 @@ import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinne
 		DropdownDirective,
 		RecipeStartComponent,
 		RecipeEditComponent,
-  AuthComponent,
-  LoadingSpinnerComponent,
+		AuthComponent,
+		LoadingSpinnerComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -42,7 +43,15 @@ import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinne
 		ReactiveFormsModule,
 		HttpClientModule,
 	],
-	providers: [ShoppingListService, RecipeService],
+	providers: [
+		ShoppingListService,
+		RecipeService,
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: AuthInterceptorService,
+			multi: true,
+		},
+	],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}
