@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Recipe } from '../models/recipe.model'
 import { RecipeService } from './recipe.service'
-import { map, tap } from 'rxjs/operators'
+import { exhaustMap, map, take, tap } from 'rxjs/operators'
+import { AuthService } from './auth.service'
 
 @Injectable({
 	providedIn: 'root',
@@ -10,7 +11,8 @@ import { map, tap } from 'rxjs/operators'
 export class DataStorageService {
 	constructor(
 		private http: HttpClient,
-		private recipeService: RecipeService
+		private recipeService: RecipeService,
+		private authService: AuthService
 	) {}
 
 	storeRecipes() {
@@ -32,9 +34,6 @@ export class DataStorageService {
 			)
 			.pipe(
 				map((recipes) => {
-					// this map is not the rxjs operator, its the normal js array method
-					// takes an anonymous function which is executed for every element in array
-					// general we do the mapping here to have an empty ingredients array if NO ingredients are stored on the server
 					return recipes.map((recipe) => {
 						return {
 							...recipe,
