@@ -93,15 +93,30 @@ export class AuthService {
 			new Date(userData._tokenExpirationDate)
 		)
 
-		// now the loaded  data is again converted into a user object -> .token can be called and will return a NOT truthy result if the token expired
+		// now the loaded  data is (again) converted into a user object -> .token can be called and will return a NOT truthy result if the token expired
 		if (loadedUser.token) {
 			this.subUser.next(loadedUser)
+			const expirationDuration =
+				new Date(userData._tokenExpirationDate).getTime() -
+				new Date().getTime()
+			this.autoLogout(expirationDuration)
 		}
 	}
 
 	logout() {
 		this.subUser.next(null)
 		this.router.navigate(['/authenticate'])
+		localStorage.removeItem('userData')
+		if (this.tokenExpirationTimer) {
+			clearTimeout(this.tokenExpirationTimer)
+		}
+		this.tokenExpirationTimer = null
+	}
+
+	autoLogout(expirationDuration: number) {
+		this.tokenExpirationTimer = setTimeout(() => {
+			this.logout()
+		}, expirationDuration)
 	}
 
 	private handleError(errorRes: HttpErrorResponse) {
@@ -135,6 +150,7 @@ export class AuthService {
 		const user = new User(email, userId, token, expirationDate)
 		console.log(user)
 		this.subUser.next(user)
+		this.autoLogout(expiresIn * 1000)
 		localStorage.setItem('userData', JSON.stringify(user))
 	}
 }
