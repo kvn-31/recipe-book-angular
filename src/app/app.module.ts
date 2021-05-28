@@ -20,6 +20,8 @@ import { ShoppingListService } from './shared/services/shopping-list.service'
 import { AuthComponent } from './auth/auth.component'
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component'
 import { AuthInterceptorService } from './shared/services/auth-interceptor.service'
+import { AlertComponent } from './shared/alert/alert.component'
+import { PlaceholderDirective } from './shared/placeholder-directive/placeholder.directive'
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -35,6 +37,8 @@ import { AuthInterceptorService } from './shared/services/auth-interceptor.servi
 		RecipeEditComponent,
 		AuthComponent,
 		LoadingSpinnerComponent,
+		AlertComponent,
+		PlaceholderDirective,
 	],
 	imports: [
 		BrowserModule,
