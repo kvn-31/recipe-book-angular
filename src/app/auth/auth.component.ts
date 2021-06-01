@@ -1,12 +1,13 @@
 import {
 	Component,
 	ComponentFactoryResolver,
+	OnDestroy,
 	OnInit,
 	ViewChild,
 } from '@angular/core'
 import { NgForm } from '@angular/forms'
 import { Router } from '@angular/router'
-import { Observable } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 import { AlertComponent } from '../shared/alert/alert.component'
 import { PlaceholderDirective } from '../shared/placeholder-directive/placeholder.directive'
 import { AuthResponseData, AuthService } from '../shared/services/auth.service'
@@ -16,12 +17,14 @@ import { AuthResponseData, AuthService } from '../shared/services/auth.service'
 	templateUrl: './auth.component.html',
 	styleUrls: ['./auth.component.scss'],
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
 	isLoginMode = true
 	isLoading = false
 	error!: string | null
 	@ViewChild(PlaceholderDirective, { static: false })
-	alertHost: PlaceholderDirective
+	alertHost!: PlaceholderDirective
+
+	private closeSub!: Subscription
 
 	constructor(
 		private authService: AuthService,
@@ -30,6 +33,12 @@ export class AuthComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {}
+
+	ngOnDestroy() {
+		if (this.closeSub) {
+			this.closeSub.unsubscribe()
+		}
+	}
 
 	onSwitchMode() {
 		this.isLoginMode = !this.isLoginMode
@@ -85,6 +94,16 @@ export class AuthComponent implements OnInit {
 		// clears all angular components which ahve been created at this place before
 		hostViewContainerRef.clear()
 
-		hostViewContainerRef.createComponent(alertCmpFactory)
+		const componentRef =
+			hostViewContainerRef.createComponent(alertCmpFactory)
+
+		// pass data into the component
+		// access to the concrete instance
+		componentRef.instance.message = errorMessage
+		// only exception, where it is okay to subscribe to subscribe to any other than a subject
+		this.closeSub = componentRef.instance.close.subscribe(() => {
+			this.closeSub.unsubscribe()
+			hostViewContainerRef.clear()
+		})
 	}
 }
