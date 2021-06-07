@@ -6,7 +6,7 @@ import { SharedModule } from '../shared/shared.module'
 import { AuthComponent } from './auth.component'
 const routes: Routes = [
 	{
-		path: 'authenticate',
+		path: '',
 		component: AuthComponent,
 	},
 ]
