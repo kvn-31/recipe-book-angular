@@ -5,6 +5,8 @@ import { BehaviorSubject, ReplaySubject, throwError } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
 import { User } from '../models/user.model'
 
+import { environment } from '../../environments/environment'
+
 export interface AuthResponseData {
 	idToken: string
 	email: string
@@ -18,7 +20,7 @@ export interface AuthResponseData {
 	providedIn: 'root',
 })
 export class AuthService {
-	key = 'AIzaSyDIg5xbh208jdzdMNfbhDUakLQymseC5iM'
+	key = environment.firebaseApiKey
 	// subUser = new ReplaySubject<User>()
 	subUser = new BehaviorSubject<User | null>(null)
 
