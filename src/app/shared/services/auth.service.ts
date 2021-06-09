@@ -5,7 +5,7 @@ import { BehaviorSubject, ReplaySubject, throwError } from 'rxjs'
 import { catchError, tap } from 'rxjs/operators'
 import { User } from '../models/user.model'
 
-import { environment } from '../../environments/environment'
+import { environment } from '../../../environments/environment'
 
 export interface AuthResponseData {
 	idToken: string
